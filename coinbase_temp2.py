@@ -37,6 +37,6 @@ while counter<20:
     time.sleep(5.0 - ((time.time() - starttime) % 5.0))
     counter+=1
 
-for n in currency_menu:
-    currency_type, price_type, currency, price, formatted_date =get_price(currency_menu[n],'spot')
-    print(price_type, 'price of', currency_type, 'as of', formatted_date, 'is', price)
+# for n in currency_menu:
+#     currency_type, price_type, currency, price, formatted_date =get_price(currency_menu[n],'spot')
+#     print(price_type, 'price of', currency_type, 'as of', formatted_date, 'is', price)
