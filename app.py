@@ -15,17 +15,27 @@ public_client = cbpro.PublicClient()
 mydict = public_client.get_currencies()
 
 
-for n in range(0,len(mydict)):
-    print(mydict[n]['id'], mydict[n]['name'],mydict[n]['details']['symbol'])
-    currency_id = str(n)
-    #currency_symbol = mdyict[n]['details']['symbol']
-    #currency_short_name = mdyict[n]['id']
-    #currency_long_name = mydict[n]['details']
-   
-    print('insert into currency(currency_id, currency_symbol, currency_short_name, currency_long_name) values('+currency_id+ ',' + mydict[n]['details']['symbol']+','+ mydict[n]['name'])
-    #+','+vmydict[n]['name'])
-    print('------------------------------')
+def load_currency_list():
+    for n in range(0,len(mydict)):
+        #print(mydict[n]['id'], mydict[n]['name'],mydict[n]['details']['symbol'])
+        # currency_id = str(n)
+        # print('insert into currency(currency_id, currency_symbol, currency_long_name, currency_short_name) values('+currency_id+ ',\''  + 
+        #     mydict[n]['details']['symbol']+'\',\''+ 
+        #     mydict[n]['name']+'\',\''+
+        #     mydict[n]['id']+ '\')')
+                
+        query ='insert into currency(currency_id, currency_symbol, currency_long_name, currency_short_name) values(%s,%s,%s,%s)'
+        args = (n, mydict[n]['details']['symbol'], mydict[n]['name'], mydict[n]['id'])
+        # values('+currency_id+ ',\''  + 
+        #     mydict[n]['details']['symbol']+'\',\''+ 
+        #     mydict[n]['name']+'\',\''+
+        #     mydict[n]['id']+ '\')')
 
+        run_query(query,args)
+        #print(query, args)
+        #+','+vmydict[n]['name'])
+        print('------------------------------')
+        
 
 
 def get_connection():
@@ -34,13 +44,68 @@ def get_connection():
     auth_plugin='mysql_native_password')
     return connection
 
-def run_query(sql):
+def run_query(query,args):
     connection = get_connection()
-    result_set = connection.cmd_query(sql)
-    result_set_and_meta = connection.get_rows()
-    result_set = result_set_and_meta[0]
-    connection.close()
-    return result_set
+    sql_select_Query = 'select * from currency where currency_short_name = %s (arg)'
+    arg = 'BTC'
+    cursor = connection .cursor()
+    cursor.execute(sql_select_Query, arg)
+    records = cursor.fetchall()
+    print("Total number of currencies is - ", cursor.rowcount)
+    print(records)
+    cursor.close()
+
+def get_currency_detail(currency_short_name):
+    import mysql.connector
+    mydb = mysql.connector.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
+        auth_plugin='mysql_native_password')
+
+    mycursor = mydb.cursor()
+
+    sql = "SELECT currency_symbol, currency_short_name, currency_long_name FROM currency WHERE currency_short_name = %s"
+    nam = (currency_short_name,)
+
+    mycursor.execute(sql, nam)
+
+    myresult = mycursor.fetchall()
+
+    for x in myresult:
+        print(x)
+
+currency_list = ('BTC','LTC','ETH')
+
+for n in range(0,len(currency_list)):
+    get_currency_detail(currency_list[n])
+
+
+# get_currency_detail('BTC')
+# get_currency_detail('LTC')
+# get_currency_detail('ETH')
+    #mydb.close()
+
+# get_currency_list()
+    
+#     #sql = 'select * from currency where currency_short_'
+#     #connection.cmd_query(sql)
+#     #mycursor = connection.cursor()
+    
+#     args = 'ETH'
+    #mycursor.execute(query)
+    #connection.commit()
+
+    #print(query, args)
+    #mycursor.execute(query, args)
+    #print(query, args)
+    #sql = query + args
+    #result_set = mycursor.fetchall()
+    #result_set = connection.cmd_query(sql)
+    #result_set_and_meta = mycursor._affected_rows
+    #print(result_set)
+    # result_set = result_set_and_meta[0]
+    
+    
+#load_currency_list()
+# get_currency_menu('ETH')
     
 # <html>
 # <div class="container-fluid" id="feedback">
