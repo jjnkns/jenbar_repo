@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask import request
 import mysql.connector as mc
 import cbpro
@@ -8,11 +8,28 @@ app = Flask(__name__)
 
 @app.route('/')
 def monkey():
-    return "Hithere"
+        #main()
+        #return "Hithere"
+        return render_template('index.html')
+
+@app.route('/buy')
+def buy():
+        #main()
+        #return "Hithere"
+        return render_template('buy.html')
+
+@app.route('/sell')
+def sell():
+        #main()
+        #return "Hithere"
+        return render_template('sell.html', products=['ETH','LTC','BTC'])
 
 
 public_client = cbpro.PublicClient()
 mydict = public_client.get_currencies()
+
+def main():
+    return render_template('index.html')
 
 
 def load_currency_list():
@@ -32,7 +49,7 @@ def load_currency_list():
         #     mydict[n]['id']+ '\')')
 
         run_query(query,args)
-        #print(query, args)
+       
         #+','+vmydict[n]['name'])
         print('------------------------------')
         
@@ -43,6 +60,16 @@ def get_connection():
     connection = mc.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
     auth_plugin='mysql_native_password')
     return connection
+
+# def call_stored_proc(arg):
+#     connection = get_connection()
+#     cursor = connection .cursor()
+#     cursor.callproc('GetCurrencySymbol',arg)
+#     #records = cursor.fetchall()
+#     #print("Total number of currencies is - ", cursor.rowcount)
+#     #print(records)
+#     #cursor.close()
+
 
 def run_query(query,args):
     connection = get_connection()
@@ -77,35 +104,8 @@ currency_list = ('BTC','LTC','ETH')
 for n in range(0,len(currency_list)):
     get_currency_detail(currency_list[n])
 
+# call_stored_proc('BTC')
 
-# get_currency_detail('BTC')
-# get_currency_detail('LTC')
-# get_currency_detail('ETH')
-    #mydb.close()
-
-# get_currency_list()
-    
-#     #sql = 'select * from currency where currency_short_'
-#     #connection.cmd_query(sql)
-#     #mycursor = connection.cursor()
-    
-#     args = 'ETH'
-    #mycursor.execute(query)
-    #connection.commit()
-
-    #print(query, args)
-    #mycursor.execute(query, args)
-    #print(query, args)
-    #sql = query + args
-    #result_set = mycursor.fetchall()
-    #result_set = connection.cmd_query(sql)
-    #result_set_and_meta = mycursor._affected_rows
-    #print(result_set)
-    # result_set = result_set_and_meta[0]
-    
-    
-#load_currency_list()
-# get_currency_menu('ETH')
     
 # <html>
 # <div class="container-fluid" id="feedback">
@@ -137,28 +137,17 @@ for n in range(0,len(currency_list)):
 # </div>
 #     return  'Welcome'
 
-# #     <html>
-# #     <head>
-# #         <title>Favorite Game</title>
-# #     </head>
-# #     <body>
-# #         <form action="/submitgame" method="get">
-# #             Enter your name: <input type="text" name="username">
-# #             Enter your fav game: <input type="text" name="favgame">
-# #             <input type="submit">
-# #         </form>
-# #     </body>
-# # </html> 
+
     
 
-@app.route('/buy')
-def route_buy():
+# @app.route('/buy')
+# def route_buy():
     
-    currency = request.args.get('What do you want to buy?')
-    return 'You want to buy' + str(currency).upper()
+#     currency = request.args.get('What do you want to buy?')
+#     return 'You want to buy' + str(currency).upper()
 
-@app.route('/sell')
-def route_sell():
-    currency = request.args.get('What do you want to sell?')
-    return 'You want to sell' + str(currency).upper()
+# @app.route('/sell')
+# def route_sell():
+#     currency = request.args.get('What do you want to sell?')
+#     return 'You want to sell' + str(currency).upper()
 
