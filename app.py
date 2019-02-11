@@ -1,12 +1,12 @@
 from flask import Flask, render_template
 from flask import request
 import mysql.connector as mc
-import cbpro
+import cbpro #coinbase pro 
 import requests
 import json
 import datetime
 import time
-import locale
+import locale #useful for formatting
 
 locale.setlocale( locale.LC_ALL, '' )
 'English_United States.1252'
@@ -19,19 +19,15 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
         #this will render the main page by default
-        btc_spot_price =get_price('BTC-USD','spot')
-        eth_spot_price=get_price('ETH-USD', 'spot')
-        ltc_spot_price=get_price('LTC-USD', 'spot')
+        btc_spot_price = get_price('BTC-USD','spot')
+        eth_spot_price = get_price('ETH-USD','spot')
+        ltc_spot_price = get_price('LTC-USD','spot')
         
         return render_template(
         "index.html",
         title="Jenbar Crypto",
-        btc_spot_price=btc_spot_price, eth_spot_price= eth_spot_price, ltc_spot_price=ltc_spot_price)
+        btc_spot_price=btc_spot_price, eth_spot_price=eth_spot_price, ltc_spot_price=ltc_spot_price)
         
-        #content="this is where content goes",
-        #prices=get_price('BTC-USD', 'spot'))
-        #return render_template('index.html')
-        #{prices} = print(get_price('BTC-USD', 'spot'),# get_price('ETH-USD', 'spot'), get_price('LTC-USD', 'spot'))
 
 @app.route('/buy')
 def buy():
@@ -43,16 +39,19 @@ def sell():
         #this will render the page where customers can sell
         return render_template('sell.html', products=['ETH','LTC','BTC'])
 
+@app.route('/view_acct')
+def view_acct():
+        #this will render the page where customer can view account
+        return render_template('view_acct.html')
+        
+
+
 # #dictionary for currency types
 currency_dict= {0:'BTC-USD',2:'LTC-USD',5:'ETH-USD'}
 # #key is the same as currency id in database
 
 # public_client = cbpro.PublicClient()
 # mydict = public_client.get_currencies()
-
-# def main():
-#     return render_template('index.html')
-
 
 # def load_currency_list():
 #     for n in range(0,len(mydict)):
@@ -66,7 +65,7 @@ currency_dict= {0:'BTC-USD',2:'LTC-USD',5:'ETH-USD'}
 #         print('------------------------------')
         
 
-
+#mysql connectivity
 def get_connection():
     #returns a connection object
     connection = mc.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
@@ -75,7 +74,7 @@ def get_connection():
 
 def add_customer(first_name, middle_name, last_name, user_name, email_address):
      connection = get_connection()
-     cursor = connection .cursor()
+     cursor = connection.cursor()
      sql = ("INSERT INTO customer "
                "(first_name, middle_name, last_name, user_name, email_address) "
                "VALUES (%s, %s, %s,%s,%s)")
