@@ -6,6 +6,10 @@ import requests
 import json
 import datetime
 import time
+import locale
+
+locale.setlocale( locale.LC_ALL, '' )
+'English_United States.1252'
 
 BUY=1
 SELL=2
@@ -15,11 +19,15 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
         #this will render the main page by default
+        btc_spot_price =get_price('BTC-USD','spot')
+        eth_spot_price=get_price('ETH-USD', 'spot')
+        ltc_spot_price=get_price('LTC-USD', 'spot')
+        
         return render_template(
         "index.html",
-        title="Hello, Flask, this is Jennifer",
-        content = get_price('BTC-USD', 'spot'),
-        eth_price=get_price('ETH-USD', 'spot'))
+        title="Jenbar Crypto",
+        btc_spot_price=btc_spot_price, eth_spot_price= eth_spot_price, ltc_spot_price=ltc_spot_price)
+        
         #content="this is where content goes",
         #prices=get_price('BTC-USD', 'spot'))
         #return render_template('index.html')
@@ -59,25 +67,63 @@ currency_dict= {0:'BTC-USD',2:'LTC-USD',5:'ETH-USD'}
         
 
 
-# def get_connection():
-#     #returns a connection object
-#     connection = mc.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
-#     auth_plugin='mysql_native_password')
-#     return connection
+def get_connection():
+    #returns a connection object
+    connection = mc.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
+    auth_plugin='mysql_native_password')
+    return connection
 
-# def add_customer(first_name, middle_name, last_name):
-#      connection = get_connection()
-#      cursor = connection .cursor()
-#      sql = ("INSERT INTO customer2 "
-#                "(customer_first_name, customer_middle_name, customer_last_name) "
-#                "VALUES (%s, %s, %s)")
+def add_customer(first_name, middle_name, last_name, user_name, email_address):
+     connection = get_connection()
+     cursor = connection .cursor()
+     sql = ("INSERT INTO customer "
+               "(first_name, middle_name, last_name, user_name, email_address) "
+               "VALUES (%s, %s, %s,%s,%s)")
 
-#      val = (first_name, middle_name, last_name)
+     val = (first_name, middle_name, last_name, user_name, email_address)
      
-#      cursor.execute(sql, val)
+     cursor.execute(sql, val)
      
-#      connection.commit()
-#      print('Welcome',first_name, '. Your customer id number is', str(cursor.lastrowid), 'Please retain this for your records')
+     connection.commit()
+     print('Welcome',first_name, '. Your customer id number is', str(cursor.lastrowid), 'Please retain this for your records')
+
+def add_currency(currency_short_name, currency_long_name, currency_symbol, country_currency):
+        connection = get_connection()
+        cursor = connection .cursor()
+        sql = ("INSERT INTO currency "
+               "(currency_short_name, currency_long_name, currency_symbol, country_currency) "
+               "VALUES (%s, %s, %s,%s)")
+
+        val = (currency_short_name, currency_long_name, currency_symbol, country_currency)
+     
+        cursor.execute(sql, val)
+     
+        connection.commit()
+
+def add_account(currency_id, quantity):
+     connection = get_connection()
+     cursor = connection .cursor()
+     sql = ("INSERT INTO cust_account "
+               "(currency_id, quantity) "
+               "VALUES (%s, %s)")
+
+     val = (currency_id, quantity)
+     
+     cursor.execute(sql, val)
+     
+     connection.commit()
+
+def add_cust_account_assoc(customer_id, account_id):
+        connection = get_connection()
+        cursor = connection.cursor()
+        sql = ("INSERT INTO cust_acct_assoc "
+                "(customer_id, account_id) "
+                "VALUES(%s,%s)")
+        val = (customer_id, account_id)
+
+        cursor.execute(sql, val)
+        connection.commit()
+
 
 # class Trade:
 #     def __init__(self,a, q,c,p,sd):
@@ -100,8 +146,13 @@ def get_price(currency_type, price_type):
     price = data["data"]["amount"]
     #print("Currency:", currency, "Sell Price:", price, "as of", datetime.datetime.now())
     as_of_datetime=str(datetime.datetime.now())
-    return currency_type, price, as_of_datetime
+    return locale.currency( float(price), grouping=True )#, as_of_datetime.strftime("%b %d %Y %H:%M:%S")
     #currency_type, price_type, currency, price, str(datetime.datetime.now())
+
+print(get_price('BTC-USD', 'spot'))
+print(get_price('BTC-USD', 'buy'))
+print(get_price('BTC-USD', 'sell'))
+
 
 
 # def make_trade(account_id, currency_id, quantity, side):
@@ -109,6 +160,7 @@ def get_price(currency_type, price_type):
 #         price = get_price(currency_short_name, side)
 #         trade_value = float(quantity)*float(price)
 #         print("$",price)
+#         return trade_value
         
          
 #         connection = get_connection()
@@ -132,18 +184,18 @@ def get_price(currency_type, price_type):
 #                 self.__last_name =l
 #         def get_customer(self, id):
 #                 return self.__first_name, self.__middle_name, self.__last_name
-# class Account:
+#class Account:
 #         def __init__(self, currency_id, quantity):
-#                 #self.__customer_id=customer_id
+#                 #self.__account_id=account_id
 #                 self.__currency_id =currency_id
 #                 self.__quantity= quantity
-#         def get_account(self, id):
-#                 sql = ("Select * from account inner join customer on account.customer_id = customer.customer_id inner join currency on account.currency_id = currency.currency_id where account_id =%s")
-#                 val = id
-#                 connection = get_connection()
-#                 cursor = connection .cursor()
-#                 result= cursor.execute(sql, val)
-#                 return result
+def get_account_balance(account_id):
+        sql = ("Select * from customer_balance where account_id =%s")
+        val = account_id
+        connection = get_connection()
+        cursor = connection .cursor()
+        result= cursor.execute(sql, val)
+        return result
 #         def update_account(self, customer_id, currency_id, quantity, side_id):
 #                 if side_id ==1:
 #                          sql = ("UPDATE account set quantity = quantity+%s "
