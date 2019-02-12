@@ -6,60 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="Untitled.css">
-  <meta name="keywords" content="buy">
+  <meta name="keywords" content="view_acct">
   <title>buy</title>
-  <meta name="description" content="buy">
+  <meta name="description" content="view_acct">
   <link rel="stylesheet" href="/static/flat.css" type="text/css">
 </head>
 
 <body>
+        <div class="bg-dark py-3">
+                <div class="container-fluid bg-dark">
+                    <table style="width:50%">
+                        <tr>
+                          <th>Bitcoin</th>
+                          <th>Litecoin</th> 
+                          <th>Ethereum</th>
+                        </tr>
+                        <tr>
+                          <td><img src="static\bitcoin.png" ></td>
+                          <td><img src="static\litecoin.png"></td> 
+                          <td><img src="static\ethereum.png"></td>
+                        </tr>
+                        <tr>
+                          <td>{{btc_spot_price}}</td>
+                          <td>{{ltc_spot_price}}</td> 
+                          <td>{{eth_spot_price}}</td>
+                        </tr>
+                      </table>
   <div class="shadow-none bg-dark h-25 py-3">
     <div class="container">
       <div class="row bg-dark text-light">
         <div class="col-md-12">
-          <h1 class="display-4 bg-dark text-light text-center">Buy Cryptocurrency</h1>
+          <h1 class="display-4 bg-dark text-light text-center">View Account</h1>
         </div>
       </div>
     </div>
   </div>
   <div class="bg-dark py-3">
     <div class="container-fluid bg-dark">
-        <table style="width:50%">
-            <tr>
-              <th>Bitcoin</th>
-              <th>Litecoin</th> 
-              <th>Ethereum</th>
-            </tr>
-            <tr>
-              <td><img src="static\bitcoin.png" ></td>
-              <td><img src="static\litecoin.png"></td> 
-              <td><img src="static\ethereum.png"></td>
-            </tr>
-            <tr>
-              <td>{{btc_spot_price}}</td>
-              <td>{{ltc_spot_price}}</td> 
-              <td>{{eth_spot_price}}</td>
-            </tr>
-          </table>
+      <div class="row">
+      </div>
     </div>
   </div>
   <div class="py-5 bg-dark">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6" style="">
-        </div>
-        <div class="col-md-6"><label class="bg-primary border-0 text-left w-100">Enter Quantity</label>
-          <div class="row">
-            <div class="col-md-12">
-              <form class="form-inline">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Quantity">
-                  <div class="input-group-append"><button class="btn btn-primary text-body btn-block" type="button">Purchase</button></div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
