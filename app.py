@@ -6,7 +6,7 @@ import requests
 import json
 import datetime
 import time
-import locale #useful for formatting
+import locale #useful for formatting-
 
 locale.setlocale( locale.LC_ALL, '' )
 'English_United States.1252'
