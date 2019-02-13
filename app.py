@@ -19,25 +19,91 @@ app = Flask(__name__)
 @app.route('/')
 def main_page():
         #this will render the main page by default
-        btc_spot_price = get_price('BTC-USD','spot')
-        eth_spot_price = get_price('ETH-USD','spot')
-        ltc_spot_price = get_price('LTC-USD','spot')
+
+        btc_spot_price=locale.currency( float(get_price('BTC-USD','spot')), grouping=True)
+        eth_spot_price=locale.currency( float(get_price('ETH-USD','spot')), grouping=True)
+        ltc_spot_price=locale.currency( float(get_price('LTC-USD','spot')), grouping=True)
         
         return render_template(
         "index.html",
         title="Jenbar Crypto",
         btc_spot_price=btc_spot_price, eth_spot_price=eth_spot_price, ltc_spot_price=ltc_spot_price)
-        
 
-@app.route('/buy')
+
+@app.route('/buy',methods=['GET','POST'])
 def buy():
         #this will render the page where customers can buy
-        return render_template('buy.html')
+       
+
+        btc_buy_price=locale.currency( float(get_price('BTC-USD','buy')), grouping=True)
+        eth_buy_price=locale.currency( float(get_price('ETH-USD','buy')), grouping=True)
+        ltc_buy_price=locale.currency( float(get_price('LTC-USD','buy')), grouping=True)
+
+        btc_qty=0
+        eth_qty=0
+        ltc_qty=0
+
+        btc_total=get_price('BTC-USD','buy')*btc_qty
+        eth_total=get_price('ETH-USD','buy')*eth_qty
+        ltc_total=get_price('LTC-USD','buy')*ltc_qty
+        
+        if request.method == 'POST':
+                
+                btc_qty=request.form['btc_qty']
+                eth_qty=request.form['eth_qty']
+                ltc_qty=request.form['ltc_qty']
+
+                if not btc_qty=="":
+                        btc_qty=float(btc_qty)
+                else:
+                        btc_qty=0
+
+                if not eth_qty=="":
+                        eth_qty=float(eth_qty)
+                else:
+                        eth_qty=0
+                if not ltc_qty=="":
+                        ltc_qty=float(ltc_qty)
+                else:
+                        ltc_qty=0
+
+                btc_total=0
+                eth_total=0
+                ltc_total=0
+
+                if float(btc_qty)>0:
+                        btc_total=float(get_price('BTC-USD','buy'))*float(btc_qty)
+                if float(eth_qty)>0:
+                        eth_total=float(get_price('ETH-USD','buy'))*float(eth_qty)
+                if float(ltc_qty)>0:
+                        ltc_total=float(get_price('LTC-USD','buy'))*float(ltc_qty)
+
+                #format the prices and totals nicely
+
+                btc_total=locale.currency( float(btc_total), grouping=True )
+                eth_total=locale.currency( float(eth_total), grouping=True )
+                ltc_total=locale.currency( float(ltc_total), grouping=True )
+
+                btc_buy_price=locale.currency( float(get_price('BTC-USD','buy')), grouping=True)
+                eth_buy_price=locale.currency( float(get_price('ETH-USD','buy')), grouping=True)
+                ltc_buy_price=locale.currency( float(get_price('LTC-USD','buy')), grouping=True)
+               
+
+
+        return render_template('buy.html',
+        title="Jenbar Crypto Buy Page",
+        btc_buy_price=btc_buy_price, eth_buy_price=eth_buy_price, ltc_buy_price=ltc_buy_price,
+        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
 
 @app.route('/sell')
 def sell():
         #this will render the page where customers can sell
-        return render_template('sell.html', products=['ETH','LTC','BTC'])
+        btc_sell_price = get_price('BTC-USD','sell')
+        eth_sell_price = get_price('ETH-USD','sell')
+        ltc_sell_price = get_price('LTC-USD','sell')
+        return render_template('sell.html',
+        title="Jenbar Crypto Sell Page",
+        btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price)
 
 @app.route('/view_acct')
 def view_acct():
@@ -71,6 +137,7 @@ def get_connection():
     connection = mc.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
     auth_plugin='mysql_native_password')
     return connection
+
 
 def add_customer(first_name, middle_name, last_name, user_name, email_address):
      connection = get_connection()
@@ -145,7 +212,8 @@ def get_price(currency_type, price_type):
     price = data["data"]["amount"]
     #print("Currency:", currency, "Sell Price:", price, "as of", datetime.datetime.now())
     as_of_datetime=str(datetime.datetime.now())
-    return locale.currency( float(price), grouping=True )#, as_of_datetime.strftime("%b %d %Y %H:%M:%S")
+    return price
+    #return locale.currency( float(price), grouping=True )#, as_of_datetime.strftime("%b %d %Y %H:%M:%S")
     #currency_type, price_type, currency, price, str(datetime.datetime.now())
 
 print(get_price('BTC-USD', 'spot'))
@@ -153,22 +221,27 @@ print(get_price('BTC-USD', 'buy'))
 print(get_price('BTC-USD', 'sell'))
 
 
-
-# def make_trade(account_id, currency_id, quantity, side):
+#use cust account #6 for practice
+def make_trade(account_id, currency_short_name, quantity, side):
 #         currency_short_name = currency_dict[currency_id]
-#         price = get_price(currency_short_name, side)
-#         trade_value = float(quantity)*float(price)
-#         print("$",price)
-#         return trade_value
+        price = get_price(currency_short_name, side)
+
+        trade_value = float(quantity)*float(price)
+#        print("$",price)
+        
+        if side=='buy':
+                pass#update account -- add
+        else:
+                pass#update account -- subtract
+        return trade_value
         
          
 #         connection = get_connection()
 #         cursor = connection .cursor()
-#         sql = ("INSERT INTO transaction "
-#                "(customer_id, currency_id, side_id, quantity, price, transaction_datetime )"
-#                "VALUES (%s, %s, %s,%s,%s,%s)")
-
-#         val = (account_id, currency_id, quantity, price, side, datetime.datetime())
+        #   sql = ("INSERT INTO transaction "
+        #        "(account_id, currency_id, side_id, quantity, price, transaction_datetime )"
+        #        "VALUES (%s, %s, %s,%s,%s,%s)")
+        #  val = (account_id, currency_id, quantity, price, side, datetime.datetime())
      
 #         cursor.execute(sql, val)
 #         connection.commit()
