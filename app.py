@@ -7,9 +7,15 @@ import json
 import datetime
 import time
 import locale #useful for formatting-
+import tzlocal
+from dateutil import tz
+
 
 locale.setlocale( locale.LC_ALL, '' )
 'English_United States.1252'
+
+local_timezone=tzlocal.get_localzone()
+
 
 BUY=1
 SELL=2
@@ -24,11 +30,20 @@ def main_page():
         eth_spot_price=locale.currency( float(get_price('ETH-USD','spot')), grouping=True)
         ltc_spot_price=locale.currency( float(get_price('LTC-USD','spot')), grouping=True)
         
+        cd_btc_price, cd_btc_price_time=get_coindesk_btc_price()
+        
+        
         return render_template(
         "index.html",
         title="Jenbar Crypto",
-        btc_spot_price=btc_spot_price, eth_spot_price=eth_spot_price, ltc_spot_price=ltc_spot_price)
+        btc_spot_price=btc_spot_price, eth_spot_price=eth_spot_price, ltc_spot_price=ltc_spot_price,
+        cd_btc_price=cd_btc_price, cd_btc_price_time=cd_btc_price_time)
 
+@app.route('/form')
+def form_login():
+        return render_template(
+        "form.html",
+        title="Jenbar Crypto Login")
 
 @app.route('/buy',methods=['GET','POST'])
 def buy():
@@ -98,12 +113,63 @@ def buy():
 @app.route('/sell')
 def sell():
         #this will render the page where customers can sell
-        btc_sell_price = get_price('BTC-USD','sell')
-        eth_sell_price = get_price('ETH-USD','sell')
-        ltc_sell_price = get_price('LTC-USD','sell')
+        btc_sell_price=locale.currency( float(get_price('BTC-USD','sell')), grouping=True)
+        eth_sell_price=locale.currency( float(get_price('ETH-USD','sell')), grouping=True)
+        ltc_sell_price=locale.currency( float(get_price('LTC-USD','sell')), grouping=True)
+
+        btc_qty=0
+        eth_qty=0
+        ltc_qty=0
+
+        btc_total=get_price('BTC-USD','sell')*btc_qty
+        eth_total=get_price('ETH-USD','sell')*eth_qty
+        ltc_total=get_price('LTC-USD','sell')*ltc_qty
+        
+        if request.method == 'POST':
+                
+                btc_qty=request.form['btc_qty']
+                eth_qty=request.form['eth_qty']
+                ltc_qty=request.form['ltc_qty']
+
+                if not btc_qty=="":
+                        btc_qty=float(btc_qty)
+                else:
+                        btc_qty=0
+
+                if not eth_qty=="":
+                        eth_qty=float(eth_qty)
+                else:
+                        eth_qty=0
+                if not ltc_qty=="":
+                        ltc_qty=float(ltc_qty)
+                else:
+                        ltc_qty=0
+
+                btc_total=0
+                eth_total=0
+                ltc_total=0
+
+                if float(btc_qty)>0:
+                        btc_total=float(get_price('BTC-USD','sell'))*float(btc_qty)
+                if float(eth_qty)>0:
+                        eth_total=float(get_price('ETH-USD','sell'))*float(eth_qty)
+                if float(ltc_qty)>0:
+                        ltc_total=float(get_price('LTC-USD','sell'))*float(ltc_qty)
+
+                #format the prices and totals nicely
+
+                btc_total=locale.currency( float(btc_total), grouping=True )
+                eth_total=locale.currency( float(eth_total), grouping=True )
+                ltc_total=locale.currency( float(ltc_total), grouping=True )
+
+                btc_sell_price=locale.currency( float(get_price('BTC-USD','sell')), grouping=True)
+                eth_sell_price=locale.currency( float(get_price('ETH-USD','sell')), grouping=True)
+                ltc_sell_price=locale.currency( float(get_price('LTC-USD','sell')), grouping=True)
+               
         return render_template('sell.html',
         title="Jenbar Crypto Sell Page",
-        btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price)
+        btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price,
+        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
 
 @app.route('/view_acct')
 def view_acct():
@@ -210,11 +276,43 @@ def get_price(currency_type, price_type):
     data = response.json()
     #currency = data["data"]["base"]
     price = data["data"]["amount"]
+
     #print("Currency:", currency, "Sell Price:", price, "as of", datetime.datetime.now())
     as_of_datetime=str(datetime.datetime.now())
-    return price
-    #return locale.currency( float(price), grouping=True )#, as_of_datetime.strftime("%b %d %Y %H:%M:%S")
-    #currency_type, price_type, currency, price, str(datetime.datetime.now())
+    return price#, as_of_datetime
+    
+
+def get_coindesk_btc_price():
+        my_url='https://api.coindesk.com/v1/bpi/currentprice/BTC.json'
+        response=requests.get(my_url)
+        data = response.json()
+        coindesk_btc_price= data['bpi']['USD']['rate_float']
+        coindesk_btc_price_time=data["time"]["updated"]
+        return coindesk_btc_price, coindesk_btc_price_time
+
+#there is no coindesk api for ethereum at this time
+# def get_coindesk_eth_price():
+ 
+#there is no coindesk api for litecoin at this time   
+# def get_coindesk_ltc_price():
+
+       
+#         return coindesk_ltc_price, coindesk_ltc_price_time    
+        # # Auto-detect zones:
+        # from_zone = tz.tzutc()
+        # to_zone = tz.tzlocal()
+
+        # # utc = datetime.utcnow()
+        # utc = datetime.datetime.month
+        # print(utc)
+
+        # Tell the datetime object that it's in UTC time zone since 
+        # datetime objects are 'naive' by default
+        #utc = utc.replace(tzinfo=from_zone)
+
+        # Convert time zone
+        #display_price_time = utc.astimezone(to_zone)
+        #print(display_price_time)
 
 print(get_price('BTC-USD', 'spot'))
 print(get_price('BTC-USD', 'buy'))
@@ -222,32 +320,36 @@ print(get_price('BTC-USD', 'sell'))
 
 
 #use cust account #6 for practice
+#accounts: 6=BTC,7=LTC,8=ETH,9=CASH
+#currencies: 4=BTC,5=LTC,6=ETH,7=CASH
 def make_trade(account_id, currency_short_name, quantity, side):
-#         currency_short_name = currency_dict[currency_id]
+#      
+        #coinbase price
         price = get_price(currency_short_name, side)
 
         trade_value = float(quantity)*float(price)
 #        print("$",price)
+        trans_sql = "INSERT INTO transaction (account_id, currency_id, side, quantity, price) "
+        "VALUES (%s, %s, %s,%s,%s,%s)"
+        trans_val = (account_id, currency_id, side, quantity, price)
         
         if side=='buy':
-                pass#update account -- add
+                acct_sql = ("UPDATE cust_account set quantity=quantity+%s where account_id=%s and currency_id =%s")
+                acct_val = (trade_value, account_id, 6)
         else:
-                pass#update account -- subtract
-        return trade_value
+                acct_sql = ("UPDATE cust_account set quantity=quantity-%s where account_id=%s and currency_id =%s")
+                acct_val = (trade_value, account_id, 6)
         
-         
-#         connection = get_connection()
-#         cursor = connection .cursor()
-        #   sql = ("INSERT INTO transaction "
-        #        "(account_id, currency_id, side_id, quantity, price, transaction_datetime )"
-        #        "VALUES (%s, %s, %s,%s,%s,%s)")
-        #  val = (account_id, currency_id, quantity, price, side, datetime.datetime())
-     
-#         cursor.execute(sql, val)
-#         connection.commit()
+        #return trade_value
+        
+        connection = get_connection()
+        cursor = connection .cursor()
+        cursor.execute(trans_sql, trans_val)
+        cursor.execute(acct_sql, trans_val)
+        connection.commit()
 #         return side, trade_value
 
-# #make_trade(14, 0, 23.5, 'buy')
+# #make_trade(14, 0, 'buy', 23.5)
 
 # class Customer:
 #         def __init__(self,f,m,l):
