@@ -2,107 +2,132 @@
 <html>
 <style>
 body{background-color: rgba(6, 38, 41, 0.673)}</style>
-<!-- <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
- ngs -->
-  
-  <head>
-      <meta charset="utf-8" />
-      <title>{{ title }}</title>
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
-      <link rel="stylesheet" href="Untitled.css">
+
+
+<head>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="Untitled.css">
+    <link rel="stylesheet" href="/static/flat.css" type="text/css">
   </head>
-</head>
+
+
 
 <body >
-  <!-- Navbar -->
+  <!-- Navbar ideal order is HOME, REGISTER, BUY, SELL, ACCOUNT-->
   <nav class="navbar navbar-expand-md bg-primary navbar-light fixed-top">
     <div class="container">
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar3SupportedContent" aria-controls="navbar3SupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse text-center justify-content-center" id="navbar3SupportedContent">
+      <div class="collapse navbar-collapse navbar-light-hover-color: rgba($primary, .7) text-center justify-content-center" id="navbar3SupportedContent">
         <ul class="navbar-nav">
           <li class="nav-item mx-2">
+            <a class="nav-link" href="/">
+              <b><h2>Home</h2></b>
+            </a>
+          </li>
+          <li>
+              <a class="nav-link" href="/">
+                <b><h2>Refresh</h2></b>
+              </a>
+            </li>
+
+          <li>
+            <a class="nav-link" href="/form">
+              <b><h2>Register</h2></b>
+            </a>
+          </li>
+          <li></li>
+          <li>
             <a class="nav-link" href="/buy">
-              <b>BUY</b>
+              <b><h2>Buy</h2></b>
             </a>
-          </li>
+        </li>
+        <li></li>
           <li>
-            <a class="nav-link" href="/sell">
-              <b>SELL</b>
-            </a>
-          </li>
-          <li>
-            <a class="nav-link" href="/view_acct">
-              <b>VIEW ACCOUNT</b>
-            </a>
-          </li>
+              <a class="nav-link" href="/sell">
+                <b><h2>Sell</h2></b>
+              </a>
+            </li>
+            <li>
+                <a class="nav-link" href="/view_acct">
+                  <b><h2>Account</h2></b>
+                </a>
+              </li>
         </ul>
       </div>
     </div>
   </nav>
   <!-- Cover -->
-  <div class="align-items-center d-flex py-5 cover section-primary"> 
+  <!-- <div class="align-items-center d-flex py-5 cover section-primary">  -->
   
-    <div class="container">
+    <!-- <div class="container"> -->
       
-      <div class="row">
+      <!-- <div class="row"> -->
         <div class="col-lg-7 align-self-center text-lg-left text-center">
-          <h1 class="mb-0 mt-4 display-4">The Cryptocurrency Store</h1>
-          <p class="mb-5">Show Spot <Prices class="">prices</Prices></p>
+          <br>
+          <br>
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+          <h2 class="mb-0 mt-4 display-4">The Cryptocurrency Store</h2>
         </div>
-      </div>
-    </div>
-  </div>
+      <!-- </div> -->
+    <!-- </div> -->
+  <!-- </div> -->
 
   <!-- Gallery -->
   <html>
       <head>
       <style>
-      div.gallery {
-        margin: 3px;
-        border: 1px solid #060505;
-        float: left;
-        width: 180px;
-      }
-      
-      div.gallery:hover {
-        border: 1px solid #777;
-      }
-      
-      div.gallery img {
-        width: 100%;
-        height: 120px;
-      }
-      
-      div.desc {
-        padding: 10px;
-        text-align: center;
-      }
+     
       </style>
       </head>
       <body>
-
-          <table style="width:50%">
-              <tr>
-                <th>Bitcoin</th>
-                <th>Litecoin</th> 
-                <th>Ethereum</th>
-              </tr>
-              <tr>
-                <td><img src="static\bitcoin.png" ></td>
-                <td><img src="static\litecoin.png"></td> 
-                <td><img src="static\ethereum.png"></td>
-              </tr>
-              <tr>
-                <td>{{btc_spot_price}}</td>
-                <td>{{ltc_spot_price}}</td> 
-                <td>{{eth_spot_price}}</td>
-              </tr>
-            </table>
+          <div class="bg-dark py-4">
+              <div class="container-fluid bg-dark">
+                  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+                  <table style="width:50%">
+                      <tbody>
+                        <tr style="text-align:center">
+                          <td style="font-size:40px">Bitcoin</td>
+                          <td style="font-size:40px">Litecoin</td> 
+                          <td style="font-size:40px">Ethereum</td>
+                        </style>
+                        </tr>
+                        <tr>
+                          <td><img src="static\bitcoin.png"></td>
+                          <td><img src="static\litecoin.png"></td> 
+                          <td><img src="static\ethereum.png"></td>
+                        </tr>
+                        <tr style="text-align:center"></trstyle>
+                          <td style="font-size:24px">Coinbase spot price:</td>
+                          <td style="font-size:24px">Coinbase spot price:</td> 
+                          <td style="font-size:24px">Coinbase spot price:</td>
+                        </tr>
+                        <tr style="text-align:center"></trstyle>
+                          <td style="font-size:40px">{{btc_spot_price}}</td>
+                          <td style="font-size:40px">{{ltc_spot_price}}</td> 
+                          <td style="font-size:40px">{{eth_spot_price}}</td>
+                        </tr>
+                        <tr style="text-align:center"></trstyle>
+                          <td style="font-size:24px">{{coinbase_timestamp}}</td>
+                          <td style="font-size:24px">{{coinbase_timestamp}}</td> 
+                          <td style="font-size:24px">{{coinbase_timestamp}}</td>
+                        </tr>
+                        <tr style="text-align:center">
+                            <td style="font-size:24px"><br><br><a href="https://www.coindesk.com/price/bitcoin"><b>Bitcoin Price History</b></td>
+                            <td style="font-size:24px"><br><br><a href="https://www.coindesk.com/price/litecoin"><b>Litecoin Price History</b></td> 
+                            <td style="font-size:24px"><br><br><a href="https://www.coindesk.com/price/ethereum"><b>Ethereum Price History</b></td>
+                          </tr>
+                          <tr style="text-align:center"></trstyle>
+                            <td>Powered by CoinDesk</td>
+                            <td>Powered by CoinDesk</td> 
+                            <td>Powered by CoinDesk</td>
+                          </tr>
+                        </tbody>
+                      </table>
+          </div>
       </body>
       </html>
       <html>
