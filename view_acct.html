@@ -6,49 +6,133 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
   <link rel="stylesheet" href="Untitled.css">
-  <meta name="keywords" content="view_acct">
+  <meta name="keywords" content="buy">
   <title>buy</title>
-  <meta name="description" content="view_acct">
+  <meta name="description" content="buy">
   <link rel="stylesheet" href="/static/flat.css" type="text/css">
 </head>
 
 <body>
-        <div class="bg-dark py-3">
-                <div class="container-fluid bg-dark">
-                    <table style="width:50%">
-                        <tr>
-                          <th>Bitcoin</th>
-                          <th>Litecoin</th> 
-                          <th>Ethereum</th>
-                        </tr>
-                        <tr>
-                          <td><img src="static\bitcoin.png" ></td>
-                          <td><img src="static\litecoin.png"></td> 
-                          <td><img src="static\ethereum.png"></td>
-                        </tr>
-                        <tr>
-                          <td>{{btc_spot_price}}</td>
-                          <td>{{ltc_spot_price}}</td> 
-                          <td>{{eth_spot_price}}</td>
-                        </tr>
-                      </table>
-  <div class="shadow-none bg-dark h-25 py-3">
+   <!-- Navbar -->
+   <nav class="navbar navbar-expand-md bg-primary navbar-light fixed-top">
+      <div class="container">
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbar3SupportedContent" aria-controls="navbar3SupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbar-light-hover-color: rgba($primary, .7) text-center justify-content-center" id="navbar3SupportedContent">
+          <ul class="navbar-nav">
+            <li class="nav-item mx-2">
+              <a class="nav-link" href="/">
+                <b><h2>Home</h2></b>
+              </a>
+            </li>
+            <li>
+                <a class="nav-link" href="/">
+                  <b><h2>Refresh</h2></b>
+                </a>
+              </li>
+  
+            <li>
+              <a class="nav-link" href="/form">
+                <b><h2>Register</h2></b>
+              </a>
+            </li>
+            <li></li>
+            <li>
+              <a class="nav-link" href="/buy">
+                <b><h2>Buy</h2></b>
+              </a>
+          </li>
+          <li></li>
+            <li>
+                <a class="nav-link" href="/sell">
+                  <b><h2>Sell</h2></b>
+                </a>
+              </li>
+              <li>
+                  <a class="nav-link" href="/view_acct">
+                    <b><h2>Account</h2></b>
+                  </a>
+                </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  <!-- <div class="shadow-none bg-dark h-25 py-3">
     <div class="container">
       <div class="row bg-dark text-light">
         <div class="col-md-12">
-          <h1 class="display-4 bg-dark text-light text-center">View Account</h1>
+          <br>
+          <br>
+          <br>
+          <h1 class="display-4 bg-dark text-light text-left">Buy Cryptocurrency</h1>
         </div>
       </div>
     </div>
-  </div>
-  <div class="bg-dark py-3">
-    <div class="container-fluid bg-dark">
-      <div class="row">
-      </div>
+  </div> -->
+  <div class="col-lg-7 align-self-center text-lg-left text-center">
+      <br>
+      <br>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+      <h2 class="mb-0 mt-4 display-4">View Account</h2>
     </div>
-  </div>
-  <div class="py-5 bg-dark">
-      </div>
+    <div class="bg-dark py-4">
+        <div class="container-fluid bg-dark">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+            <form action = "http://localhost:5000/view_acct" method = "POST">
+              <p style="font-size:24px">Enter customer number to continue:<input type="text" name="customer_id_number" label="enter customer id number"><input type = "submit" value = "submit" /></p>
+               <p style="font-size:24px">Account Balances for Customer Number {{customer_id}}</p>
+            <table style="width:50%">
+                <tbody>
+                  <tr style="text-align:center">
+                    <td style="font-size:40px">Bitcoin</td>
+                    <td style="font-size:40px">Litecoin</td> 
+                    <td style="font-size:40px">Ethereum</td>
+                    <td style="font-size:40px">US Dollars</td>
+                  </style>
+                  </tr>
+                  <tr>
+                    <td><img src="static\bitcoin.png"></td>
+                    <td><img src="static\litecoin.png"></td> 
+                    <td><img src="static\ethereum.png"></td>
+                    <td><img src="static\dollar.png" width="268" height="268"></td>
+                  </tr>
+                  <!-- <tr style="text-align:center"></trstyle>
+                    <td style="font-size:24px">Coinbase sell price:</td>
+                    <td style="font-size:24px">Coinbase sell price:</td> 
+                    <td style="font-size:24px">Coinbase sell price:</td>
+                  </tr>
+                  <tr style="text-align:center"></trstyle>
+                    <td style="font-size:40px">{{btc_sell_price}}</td>
+                    <td style="font-size:40px">{{ltc_sell_price}}</td> 
+                    <td style="font-size:40px">{{eth_sell_price}}</td>
+                  </tr> -->
+            <!-- <tr style="text-align:center">
+                <td>Quantity in Account:</td>
+                <td>Quantity in Account:</td> 
+                <td>Quantity in Account:</td>
+              </tr> -->
+            <!-- <tr style="text-align:center">
+                <td><input type="text" name="btc_qty"></td> 
+                <td><input type="text" name="ltc_qty"></td>
+                <td><input type="text" name="eth_qty"></td>
+              </tr> -->
+              <tr style="text-align:center">
+                  <td style="font-size:24px" class="bg-primary"><b>{{btc_symbol}} {{btc_qty}}<b></td> 
+                  <td style="font-size:24px" class="bg-primary"><b>{{ltc_symbol}} {{ltc_qty}}<b></td>
+                  <td style="font-size:24px" class="bg-primary"><b>{{etc_symbol}} {{eth_qty}}<b></td>
+                  <td style="font-size:24px" class="bg-primary"><b>{{usd_symbol}} {{usd_qty}}<b></td>
+                </tr>
+              <tr style="text-align:center">
+                  <td style="font-size:24px">Last update:<br>{{btc_last_update}}</td>
+                  <td style="font-size:24px">Last update:<br>{{ltc_last_update}}</td> 
+                  <td style="font-size:24px">Last update:<br>{{eth_last_update}}</td>
+                  <td style="font-size:24px">Last update:<br>{{usd_last_update}}</td>
+                </tr>
+            </tbody>
+          </table>
+          <!-- <p>Enter customer number to execute:<input type="text" name="customer_id_number" label="enter customer id number"><input type = "submit" value = "submit" /></p> -->
+        </form>
     </div>
   </div>
   <div class="py-5">

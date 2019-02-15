@@ -76,44 +76,57 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
       <h2 class="mb-0 mt-4 display-4">Buy Cryptocurrency</h2>
     </div>
-  <div class="bg-dark py-3">
-    <div class="container-fluid bg-dark">
-        <form action = "http://localhost:5000/buy" method = "POST">
-        <table style="width:50%"class="text-center">
-          <tbody>
-            <tr>
-              <th style="text-align:center">Bitcoin</th>
-              <th style="text-align:center">Litecoin</th> 
-              <th style="text-align:center">Ethereum</th>
-            </tr>
-            <tr>
-              <td><img src="static\bitcoin.png"></td>
-              <td><img src="static\litecoin.png"></td> 
-              <td><img src="static\ethereum.png"></td>
-            </tr>
-            <tr>
-              <td style="text-align:center">Price: {{btc_buy_price}}</td>
-              <td style="text-align:center">Price: {{ltc_buy_price}}</td> 
-              <td style="text-align:center">Price: {{eth_buy_price}}</td>
-            </tr>
-            <tr>
+    <div class="bg-dark py-4">
+        <div class="container-fluid bg-dark">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" type="text/css">
+            <form action = "http://localhost:5000/buy" method = "POST">
+              <p style="font-size:24px">Enter customer number to continue:<input type="number" name="customer_id_number" label="enter customer id number"><input type = "submit" value = "submit" /></p>
+              <p style="font-size:24px">Customer Number {{customer_id}}</p>
+            <table style="width:50%">
+                <tbody>
+                  <tr style="text-align:center">
+                    <td style="font-size:40px">Bitcoin</td>
+                    <td style="font-size:40px">Litecoin</td> 
+                    <td style="font-size:40px">Ethereum</td>
+                  </style>
+                  </tr>
+                  <tr>
+                    <td><img src="static\bitcoin.png"></td>
+                    <td><img src="static\litecoin.png"></td> 
+                    <td><img src="static\ethereum.png"></td>
+                  </tr>
+                  <tr style="text-align:center"></trstyle>
+                    <td style="font-size:24px">Coinbase buy price:</td>
+                    <td style="font-size:24px">Coinbase buy price:</td> 
+                    <td style="font-size:24px">Coinbase buy price:</td>
+                  </tr>
+                  <tr style="text-align:center"></trstyle>
+                    <td style="font-size:40px">{{btc_buy_price}}</td>
+                    <td style="font-size:40px">{{ltc_buy_price}}</td> 
+                    <td style="font-size:40px">{{eth_buy_price}}</td>
+                  </tr>
+            <tr style="text-align:center">
                 <td>Quantity to Purchase:</td>
                 <td>Quantity to Purchase:</td> 
                 <td>Quantity to Purchase:</td>
               </tr>
-            <tr>
+            <tr style="text-align:center">
                 <td><input type="text" name="btc_qty"></td> 
                 <td><input type="text" name="ltc_qty"></td>
                 <td><input type="text" name="eth_qty"></td>
               </tr>
-              <tr>
-                  <td style="text-align:center">Your Total: {{btc_total}}</td>
-                  <td style="text-align:center">Your Total: {{ltc_total}}</td> 
-                  <td style="text-align:center">Your Total: {{eth_total}}</td>
+              <tr style="text-align:center">
+                  <td style="font-size:24px" class="bg-primary"><b>{{btc_qty}}<b></td> 
+                  <td style="font-size:24px" class="bg-primary"><b>{{ltc_qty}}<b></td>
+                  <td style="font-size:24px" class="bg-primary"><b>{{eth_qty}}<b></td>
+                </tr>
+              <tr style="text-align:center">
+                  <td style="font-size:40px">Your Total:<br>{{btc_total}}</td>
+                  <td style="font-size:40px">Your Total:<br>{{ltc_total}}</td> 
+                  <td style="font-size:40px">Your Total:<br>{{eth_total}}</td>
                 </tr>
             </tbody>
           </table>
-          <p>Enter customer number to execute:<input type="text" name="customer_id_number" label="enter customer id number"><input type = "submit" value = "submit" /></p>
         </form>
     </div>
   </div>
