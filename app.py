@@ -134,9 +134,9 @@ def buy():
         return render_template('buy.html',
         title="Jenbar Crypto Buy Page",
         btc_buy_price=btc_buy_price, eth_buy_price=eth_buy_price, ltc_buy_price=ltc_buy_price,
-        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
+        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total,btc_qty=btc_qty, eth_qty=eth_qty, ltc_qty=ltc_qty)
 
-@app.route('/sell')
+@app.route('/sell', methods=['GET','POST'])
 def sell():
         #this will render the page where customers can sell
         btc_sell_price=locale.currency( float(get_price('BTC-USD','sell')), grouping=True)
@@ -192,17 +192,29 @@ def sell():
                 eth_sell_price=locale.currency( float(get_price('ETH-USD','sell')), grouping=True)
                 ltc_sell_price=locale.currency( float(get_price('LTC-USD','sell')), grouping=True)
                
+        # return render_template('sell.html',
+        # title="Jenbar Crypto Sell Page",
+        # btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price,
+        # btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
+
+        if btc_qty>0:
+                make_trade(6,'BTC-USD',btc_currency_id, btc_qty, 'sell')
+        if eth_qty>0:
+                make_trade(6,'ETH-USD',eth_currency_id, eth_qty, 'sell')
+        if ltc_qty>0:
+                make_trade(6,'LTC-USD',ltc_currency_id, ltc_qty, 'sell')
+
         return render_template('sell.html',
         title="Jenbar Crypto Sell Page",
         btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price,
-        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
+        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total,btc_qty=btc_qty, eth_qty=eth_qty, ltc_qty=ltc_qty)
 
 @app.route('/view_acct')
 def view_acct():
         #this will render the page where customer can view account
         return render_template('view_acct.html')
 def get_account_id(customer_id,curreny_id):
-        
+
         return account_id
 
 # public_client = cbpro.PublicClient()
@@ -255,6 +267,8 @@ def add_customer(first_name, middle_name, last_name, user_name, email_address):
        
      connection.commit()
      print('Welcome',first_name, '. Your customer id number is', customer_id, 'Please retain this for your records')
+     fund_cash_account(customer_id,usd_currency_id,1000000) 
+
      return customer_id
 
 def add_currency(currency_short_name, currency_long_name, currency_symbol, country_currency):
@@ -415,8 +429,23 @@ def get_account_balance(customer_id):
         connection.close()
 get_account_balance(22)
 
-def fund_cash_account(customer_id, amount):
-        pass
+def fund_cash_account(customer_id, usd_currency_id, deposit_amount):
+        acct_sql = ("UPDATE cust_account set quantity=quantity+%s where currency_id =%s"
+         " and account_id in (select account_id from cust_acct_assoc where customer_id =%s)")
+        acct_val = (deposit_amount, usd_currency_id, customer_id)
+
+        print(acct_sql, acct_val)
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute(acct_sql, acct_val)
+        cursor.close()
+        connection.commit()
+        connection.close()
+#this belongs in separate py initialization file or for new customer
+# fund_cash_account(23,7,1000000)    
+# fund_cash_account(24,7,1000000)  
+# fund_cash_account(25,7,1000000)  
+# fund_cash_account(26,7,1000000)       
 
 # def get_currency_detail(currency_short_name):
 #     import mysql.connector
