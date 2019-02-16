@@ -125,20 +125,13 @@ def buy():
                 eth_acct, eth_symbol, eth_qty_owned, eth_last_update= get_account_balance(customer_id,eth_currency_id)
                 usd_acct, usd_symbol, usd_qty_owned, usd_last_update= get_account_balance(customer_id,usd_currency_id)
 
-                        #make_tra
-                        # de(account_id, currency_short_name, currency_id, quantity, side):
+                        
                 #if btc_qty>0:
-                make_trade(btc_acct,'BTC-USD',btc_currency_id, btc_qty, 'buy')
+                make_trade(customer_id, btc_acct,'BTC-USD',btc_currency_id, btc_qty, 'buy')
                 #if eth_qty>0:
-                make_trade(eth_acct,'ETH-USD',eth_currency_id, eth_qty, 'buy')
+                make_trade(customer_id, eth_acct,'ETH-USD',eth_currency_id, eth_qty, 'buy')
                 #if ltc_qty>0:
-                make_trade(ltc_acct,'LTC-USD',ltc_currency_id, ltc_qty, 'buy')
-
-                make_trade(41,'BTC-USD',4,8,'buy')
-
-                        #get the money out of their usd cash account too!
-
-                
+                make_trade(customer_id, ltc_acct,'LTC-USD',ltc_currency_id, ltc_qty, 'buy')
 
 
         return render_template('buy.html',
@@ -161,12 +154,17 @@ def sell():
         btc_total=get_price('BTC-USD','sell')*btc_qty
         eth_total=get_price('ETH-USD','sell')*eth_qty
         ltc_total=get_price('LTC-USD','sell')*ltc_qty
+
+        customer_id=0
         
         if request.method == 'POST':
                 
                 btc_qty=request.form['btc_qty']
                 eth_qty=request.form['eth_qty']
                 ltc_qty=request.form['ltc_qty']
+
+                customer_id = request.form['customer_id_number']
+
 
                 if not btc_qty=="":
                         btc_qty=float(btc_qty)
@@ -202,28 +200,30 @@ def sell():
                 btc_sell_price=locale.currency( float(get_price('BTC-USD','sell')), grouping=True)
                 eth_sell_price=locale.currency( float(get_price('ETH-USD','sell')), grouping=True)
                 ltc_sell_price=locale.currency( float(get_price('LTC-USD','sell')), grouping=True)
-               
-        # return render_template('sell.html',
-        # title="Jenbar Crypto Sell Page",
-        # btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price,
-        # btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total)
 
-        if btc_qty>0:
-                make_trade(6,'BTC-USD',btc_currency_id, btc_qty, 'sell')
-        if eth_qty>0:
-                make_trade(6,'ETH-USD',eth_currency_id, eth_qty, 'sell')
-        if ltc_qty>0:
-                make_trade(6,'LTC-USD',ltc_currency_id, ltc_qty, 'sell')
+                #lookup account numbers and balances for this customer
+                
+                btc_acct, btc_symbol, btc_qty_owned, btc_last_update= get_account_balance(customer_id,btc_currency_id)
+                ltc_acct, ltc_symbol, ltc_qty_owned, ltc_last_update= get_account_balance(customer_id,ltc_currency_id)
+                eth_acct, eth_symbol, eth_qty_owned, eth_last_update= get_account_balance(customer_id,eth_currency_id)
+                usd_acct, usd_symbol, usd_qty_owned, usd_last_update= get_account_balance(customer_id,usd_currency_id)
+                #this checks to see if there are enough coins in inventory to actually sell
+                if btc_qty>0 and btc_qty<=btc_qty_owned:
+                        make_trade(customer_id, btc_acct,'BTC-USD',btc_currency_id, btc_qty, 'sell')
+                if eth_qty>0 and eth_qty<=eth_qty_owned:
+                        make_trade(customer_id, eth_acct,'ETH-USD',eth_currency_id, eth_qty, 'sell')
+                if ltc_qty>0 and ltc_qty<=ltc_qty_owned:
+                        make_trade(customer_id, ltc_acct,'LTC-USD',ltc_currency_id, ltc_qty, 'sell')
 
         return render_template('sell.html',
         title="Jenbar Crypto Sell Page",
         btc_sell_price=btc_sell_price, eth_sell_price=eth_sell_price, ltc_sell_price=ltc_sell_price,
-        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total,btc_qty=btc_qty, eth_qty=eth_qty, ltc_qty=ltc_qty)
+        btc_total=btc_total, eth_total=eth_total, ltc_total=ltc_total,btc_qty=btc_qty, eth_qty=eth_qty, ltc_qty=ltc_qty,customer_id=customer_id)
 
 @app.route('/view_acct', methods=['GET','POST'])
 def view_acct():
         #this will render the page where customer can view account
-        customer_id = 23
+        #customer_id = 23
         #initialize the variables
         btc_acct=0
         btc_symbol=0
@@ -242,14 +242,12 @@ def view_acct():
         usd_qty=ltc_qty=0
         usd_last_update=0
         
-        # eth_acct= eth_acct, eth_symbol=eth_symbol,  eth_qty=eth_qty, eth_last_update=eth_last_update,
-        # usd_acct= usd_acct, usd_symbol=usd_symbol,  usd_qty=usd_qty, usd_last_update=usd_last_update
-
         btc_currency_id=currency_dict['BTC']
         ltc_currency_id=currency_dict['LTC']
         eth_currency_id=currency_dict['ETH']
         usd_currency_id=currency_dict['USD']
-
+        #hardcoding customer id temporarily because page breaks if no value
+        #better to find out how to test for existence and validity
         customer_id=23
 
         if request.method == 'POST':
@@ -261,12 +259,8 @@ def view_acct():
                         eth_acct, eth_symbol, eth_qty, eth_last_update= get_account_balance(customer_id,eth_currency_id)
                         usd_acct, usd_symbol, usd_qty, usd_last_update= get_account_balance(customer_id,usd_currency_id)
                 
-                #make the dates look better
+        #make the dates look better
                 
-        #account_id, currency_symbol, quantity, last_update
-                
-        # customer_id=
-        # def get_account_id(customer_id,curreny_id):
         if isinstance(btc_last_update,datetime.date):
                 btc_last_update = btc_last_update.strftime("%m/%d/%y at %I:%M %p")
         if isinstance(ltc_last_update,datetime.date):
@@ -283,6 +277,7 @@ def view_acct():
         eth_acct= eth_acct, eth_symbol=eth_symbol,  eth_qty=eth_qty, eth_last_update=eth_last_update,
         usd_acct= usd_acct, usd_symbol=usd_symbol,  usd_qty=usd_qty, usd_last_update=usd_last_update)
 
+#for future use
 # public_client = cbpro.PublicClient()
 # mydict = public_client.get_currencies()
 
@@ -308,7 +303,7 @@ def get_connection():
 
 def add_customer(first_name, middle_name, last_name, user_name, email_address):
      #create an customer with 4 accounts-one for USD cash and one for each crypto
-     #initalize balance as 0
+     #initialize balance as 0
      connection = get_connection()
      cursor = connection.cursor()
      sql = ("INSERT INTO customer "
@@ -365,6 +360,18 @@ def get_currency_dict():
                 value=row[1]
                 currency_dict.update({key:value})
         return currency_dict
+
+def get_cust_cash_acct():
+
+        connection = get_connection()
+        cursor = connection.cursor()
+        cursor.execute("SELECT customer_id, account_id FROM customer_cash_accounts")
+        cash_acct_dict={}
+        for row in cursor:
+                key=row[0]
+                value=row[1]
+                cash_acct_dict.update({key:value})
+        return cash_acct_dict
 
 currency_dict=get_currency_dict() 
 print(currency_dict)
@@ -424,70 +431,60 @@ def get_coindesk_btc_price():
         coindesk_btc_price_time=data["time"]["updated"]
         return coindesk_btc_price, coindesk_btc_price_time
 
-
-       
-#         return coindesk_ltc_price, coindesk_ltc_price_time    
-        # # Auto-detect zones:
-        # from_zone = tz.tzutc()
-        # to_zone = tz.tzlocal()
-
-        # # utc = datetime.utcnow()
-        # utc = datetime.datetime.month
-        # print(utc)
-
-        # Tell the datetime object that it's in UTC time zone since 
-        # datetime objects are 'naive' by default
-        #utc = utc.replace(tzinfo=from_zone)
-
-        # Convert time zone
-        #display_price_time = utc.astimezone(to_zone)
-        #print(display_price_time)
-
-
-
-#use cust account #6 for practice
-#accounts: 6=BTC,7=LTC,8=ETH,9=CASH
-#currencies: 4=BTC,5=LTC,6=ETH,7=CASH
-def make_trade(account_id, currency_short_name, currency_id, quantity, side):
+def make_trade(customer_id, account_id, currency_short_name, currency_id, quantity, side):
+        #update the transaction table and the account table
  
         #coinbase price
         price = get_price(currency_short_name, side)
 
         trade_value = float(quantity)*float(price)
         trans_sql = "INSERT INTO acct_transaction (account_id, currency_id, side, quantity, price) VALUES (%s, %s, %s,%s,%s)"
-        trans_val = (int(account_id), int(currency_id), side, float(quantity), float(price))
+        trans_val = (account_id, currency_id, side, float(quantity), float(price))
         
-        acct_val = (float(quantity), int(account_id), int(currency_id))
-        if side=='buy':
-                acct_sql = ("UPDATE cust_account set quantity=quantity+%s where account_id=%s and currency_id =%s")
-                print('hooray')
-
-                acct_sql_usd =("UPDATE cust_account set quantity=quantity-trade_value where currency_id=%s" )
-                acct_val_usd= (int(btc_currency_id))
-                
-        else:
-                acct_sql = ("UPDATE cust_account set quantity=quantity-%s where account_id=%s and currency_id =%s")
-        print('Trying to trade', trans_sql, trans_val)
-        print('Trying to trade', acct_sql, acct_val)
-        print('Trying to trade', acct_sql_usd, acct_val_usd)
-        
-        #return trade_value
-        
+        #update the transaction table
         connection = get_connection()
         cursor = connection.cursor()
         cursor.execute(trans_sql, trans_val)
         connection.commit()
         cursor.close()
+
+        #now to get the correct USD cash account id for the same customer
+        #the function returns a dictionary with account list from db
+        #we pass in the customer id to lookup the account number for USD cash account
+        cust_cash_acct=get_cust_cash_acct()
+        cash_account_id = cust_cash_acct[int(customer_id)]
+        print("cash account id is", cash_account_id)
+
+        #these are the parameters for updating the account table balance
+        acct_val = (float(quantity), account_id, currency_id) #currency they are buying or selling
+        acct_val_cash = (float(trade_value), cash_account_id, usd_currency_id) #us dollars
+         
+        #dynamically construct sql statements based on whether customer is buying or selling
+        if side=='buy':
+                #increase quantity of crypto in inventory
+                acct_sql = ("UPDATE cust_account set quantity=quantity+%s where account_id=%s and currency_id =%s")
+                #decrease quantity of us dollars
+                acct_sql_cash = ("UPDATE cust_account set quantity=quantity-%s where account_id=%s and currency_id =%s")
+        elif side=='sell':
+                #decrease quantity of crypto in inventory
+                acct_sql = ("UPDATE cust_account set quantity=quantity-%s where account_id=%s and currency_id =%s")
+                #increase quantity of us dollars
+                acct_sql_cash = ("UPDATE cust_account set quantity=quantity+%s where account_id=%s and currency_id =%s")
+
+        #now update the relevant crypto and cash accounts
         
         cursor = connection.cursor()
+        #update the account for the currency being bought or sold
         cursor.execute(acct_sql, acct_val)
+        #update the corresponding cash account for the customers
+        cursor.execute(acct_sql_cash, acct_val_cash )
+       
         connection.commit()
         connection.close()
-#         return side, trade_value
 
-# #make_trade(14, 0, 'buy', 23.5)
 
 def get_account_balance(customer_id, currency_id):
+        #find out how much user has in each account
         sql = ("Select account_id, currency_symbol, quantity, last_update from customer_balance where customer_id=%s and currency_id=%s")
         val = (customer_id,currency_id)
         print(sql,val)
@@ -495,9 +492,6 @@ def get_account_balance(customer_id, currency_id):
         cursor = connection.cursor()
         cursor.execute(sql,val)
        
-        # # for (account_id, currency_long_name, currency_symbol, quantity, last_update) in cursor:
-        # #         print("{} {}{:.4f} Last updated on {:%m/%d/%Y at %I:%M %p}".format(
-        # #         currency_long_name, currency_symbol, quantity, last_update))
 
         record = cursor.fetchone()
         account_id=record[0]
@@ -509,7 +503,7 @@ def get_account_balance(customer_id, currency_id):
         connection.close()
 
         return account_id, currency_symbol, quantity, last_update
-get_account_balance(23,7)
+
 
 def fund_cash_account(customer_id, usd_currency_id, deposit_amount):
         acct_sql = ("UPDATE cust_account set quantity=quantity+%s where currency_id =%s"
@@ -523,69 +517,5 @@ def fund_cash_account(customer_id, usd_currency_id, deposit_amount):
         cursor.close()
         connection.commit()
         connection.close()
-#this belongs in separate py initialization file or for new customer
-# fund_cash_account(23,7,1000000)    
-# fund_cash_account(24,7,1000000)  
-# fund_cash_account(25,7,1000000)  
-# fund_cash_account(26,7,1000000)       
-
-# def get_currency_detail(currency_short_name):
-#     import mysql.connector
-#     mydb = mysql.connector.connect(user='root', password='ttcr^Yet1', host='127.0.0.1',database='jenbar',
-#         auth_plugin='mysql_native_password')
-
-#     mycursor = mydb.cursor()
-
-#     sql = "SELECT currency_symbol, currency_short_name, currency_long_name FROM currency WHERE currency_short_name = %s"
-#     nam = (currency_short_name,)
-
-#     mycursor.execute(sql, nam)
-
-#     myresult = mycursor.fetchall()
-
-#     for x in myresult:
-#         print(x)
-
-# currency_list = ('BTC','LTC','ETH')
-
-# for n in range(0,len(currency_list)):
-#     get_currency_detail(currency_list[n])
 
 
-# import cbpro
-# public_client = cbpro.PublicClient()
-# mydict = public_client.get_currencies()
-
-# for n in range(0,len(mydict)):
-#     print(mydict[n]['id'], mydict[n]['name'],mydict[n]['details']['symbol'])
-#     print('------------------------------')
-
-
-# https://www.youtube.com/watch?v=tdmccmKDFFw
-# code borrowed from youtube demo by Flopperam
-
-
-#currency_menu = ['BTC-USD', 'ETH-USD', 'LTC-USD']
-
-#refresh every five seconds
-# counter=0
-# starttime=time.time()
-# while counter<20:
-#     currency_type, price_type, currency, price, formatted_date =get_price('LTC-USD','spot')
-#     print(price_type, 'price of', currency_type, 'as of', formatted_date, 'is', price)
-#     time.sleep(5.0 - ((time.time() - starttime) % 5.0))
-#     counter+=1
-
-# for k, v in currency_dict.items():
-#      currency_type, price_type, currency, price, formatted_date =get_price(currency_dict(k),'spot')
-#      print(price_type, 'price of', currency_type, 'as of', formatted_date, 'is', price)
-#testing
-btc_acct, btc_symbol, btc_qty, btc_last_update= get_account_balance(24,btc_currency_id)
-ltc_acct, ltc_symbol, ltc_qty, ltc_last_update= get_account_balance(24,ltc_currency_id)
-eth_acct, eth_symbol, eth_qty, eth_last_update= get_account_balance(24,eth_currency_id)
-usd_acct, usd_symbol, usd_qty, usd_last_update= get_account_balance(24,usd_currency_id)
-
-print(btc_acct, btc_symbol, btc_qty, btc_last_update)
-print(ltc_acct, ltc_symbol, ltc_qty, btc_last_update)
-print(eth_acct, eth_symbol, eth_qty, btc_last_update)
-print(usd_acct, usd_symbol, usd_qty, btc_last_update)
